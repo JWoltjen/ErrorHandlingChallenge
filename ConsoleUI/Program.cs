@@ -20,6 +20,7 @@ namespace ConsoleUI
                 {
                     result = paymentProcessor.MakePayment($"Demo{i}", i);
 
+                    // a null result isn't an exception, so we have to code for null results inside the try block.
                     if (result != null)
                     {
                         Console.WriteLine(result.TransactionAmount);
@@ -29,9 +30,17 @@ namespace ConsoleUI
                         Console.WriteLine($"Null value for item {i}");
                     }
                 }
-                catch
+                catch (IndexOutOfRangeException ex)
                 {
-                    Console.WriteLine($"Payment skipped for payment with {i} items");
+                    Console.WriteLine($"skipped invalid record { ex.InnerException?.Message } ");
+                }
+                catch (FormatException ex) when ( i != 5) 
+                {
+                    Console.WriteLine($"Formatting Issue {ex.InnerException?.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Payment skipped for payment with {i} items { ex.InnerException?.Message }");
                 }               
             }
             Console.ReadLine();
